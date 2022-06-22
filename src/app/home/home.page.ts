@@ -53,4 +53,9 @@ async addTask(){
 
   return await model.present();
 }
+
+cancel(index: number)
+{
+ this.todoList.splice(index,1);
+}
 }
