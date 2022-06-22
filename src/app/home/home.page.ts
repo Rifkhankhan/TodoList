@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { AddNewTaskPage } from '../add-new-task/add-new-task.page';
 
 @Component({
   selector: 'app-home',
@@ -7,7 +9,7 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  constructor(private modelCtrl: ModalController) {}
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   todoList = [
@@ -39,4 +41,16 @@ export class HomePage {
 
 today: number = Date.now();
 
+async addTask(){
+  const model  = await this.modelCtrl.create({
+    component: AddNewTaskPage
+  });
+
+  model.onDidDismiss().then(newtaskObj=>{
+    this.todoList.push(newtaskObj.data);
+
+  })
+
+  return await model.present();
+}
 }
