@@ -13,12 +13,6 @@ export class StorageService {
 
   private _todlists = new BehaviorSubject([]);
 
-
-  private getUrl = '/api/lists';
-  private insertUrl = '/api/insertlist';
-  private updateVideoUrl = '/api/updateList';
-  private deleteUrl = '/api/Delete';
-
   constructor(private http: HttpClient) {
   }
 
@@ -29,8 +23,8 @@ export class StorageService {
 
   fetchTodos()
   {
-
-    return this.http.get<any>('http://localhost:3000/api/lists').pipe(
+    return this.http.get<{[key: string]: Home}>('http://localhost:3000/api/lists').pipe(
+      take(1),
       map(data=>{
         const list=[];
 
@@ -39,7 +33,7 @@ export class StorageService {
           if(data.hasOwnProperty(key))
           {
             list.push({
-              _id:key,
+              _id:data[key]._id,
               itemName:data[key].itemName,
               itemDueDate:data[key].itemDueDate,
               itemPriority:data[key].itemPriority,
@@ -47,10 +41,8 @@ export class StorageService {
             });
           }
         }
-
         return list;
       }),
-      take(1),
       tap(list=>{
         this._todlists.next(list);
       })
@@ -78,18 +70,26 @@ export class StorageService {
     tap(data=>{
       newTask._id = genId;
 
-      this._todlists.next(data);
+      this._todlists.next(data.concat(newTask));
 
     })
     );
   }
 
   deleteTask(id: string){
-    return this.http.delete('http://localhost:3000/api/Delete'+id);
+    return this.http.delete(`http://localhost:3000/api/Delete/${id}`).pipe(
+      take(1),
+      switchMap(()=>{
+        return this.getAllTodo
+      }),
+      tap(data=>{
+        this._todlists.next(data.filter(p => p.id !== id));
+      })
+    );
   }
 
   updateTask(todo: Home){
-    return this.http.put('http://localhost:3000/api/updateList'+todo.id, todo);
+    return this.http.put(`http://localhost:3000/api/Delete/${todo._id}`, todo);
   }
 
 

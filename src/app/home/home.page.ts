@@ -25,6 +25,7 @@ ngOnInit()
 {
  this.sub= this.todoService.getAllTodo.subscribe(list=>{
     this.todoList = list;
+
   });
 }
 
@@ -50,9 +51,9 @@ async addTask(){
   return await model.present();
 }
 
-cancel(index: number)
+cancel(id: string)
 {
- this.todoList.splice(index,1);
+  this.todoService.deleteTask(id).subscribe();
 }
 
 ngOnDestroy(): void {

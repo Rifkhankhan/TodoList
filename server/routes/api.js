@@ -94,13 +94,14 @@ router.post('/updateList/:id',function(req,res){
 router.delete('/Delete/:id',function(req,res){
   console.log("Delete Request For a list");
 
-  Video.findByIdAndRemove(req.params.id,function(err,deletedlist){
+  Todo.findByIdAndRemove(req.params.id,function(err,deletedlist){
     if(err)
     {
       res.send("Error Deleting list")
     }
     else
     {
+      console.log(deletedlist);
       res.json(deletedlist)
     }
   })
